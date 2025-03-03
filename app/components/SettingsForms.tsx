@@ -50,7 +50,7 @@ export function SettingsForm({ email, fullName, profileImage }: SettingsProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Settings</CardTitle>
+        <CardTitle className="text-3xl">Settings</CardTitle>
         <CardDescription>Manage your account settings</CardDescription>
       </CardHeader>
 
