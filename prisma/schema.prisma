@@ -9,16 +9,18 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String         @unique
   emailVerified DateTime?
   image         String?
-  userName      String?   @unique
+  userName      String?        @unique
   grantId       String?
   grantEmail    String?
   accounts      Account[]
   sessions      Session[]
+  Availability  Availability[]
+  EventType     EventType[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -61,4 +63,44 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model Availability {
+  id String @id @default(uuid())
+
+  day      Day
+  fromTime String // e.g., '08:00'
+  tillTime String // e.g., '18:00'
+  isActive Boolean @default(true) // Toggle availability for the day
+
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Day {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
+model EventType {
+  id                String  @id @default(uuid())
+  title             String
+  duration          Int
+  url               String
+  description       String
+  active            Boolean @default(true)
+  videoCallSoftware String  @default("Google Meet")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
 }
