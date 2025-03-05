@@ -5,6 +5,7 @@ import { requireUser } from "./lib/hooks";
 import { parseWithZod } from "@conform-to/zod";
 import {
   aboutSettingsSchema,
+  eventTypeSchema,
   onboardingSchema,
   onboardingSchemaValidation,
 } from "./lib/zodSchemas";
@@ -106,7 +107,7 @@ export async function OnboardingAction(prevState: any, FormData: FormData) {
  * @param formData Form data from the submission
  * @returns Validation errors or redirects to dashboard
  */
-export async function SettingsAction(prevState: any, formData: FormData)  {
+export async function SettingsAction(prevState: any, formData: FormData) {
   // Get current user session
   const session = await requireUser();
 
@@ -139,7 +140,9 @@ export async function SettingsAction(prevState: any, formData: FormData)  {
  * Updates user availability settings
  * @param formData Form data containing availability information
  */
-export async function updateAvailabilityAction(formData: FormData) : Promise<void> {
+export async function updateAvailabilityAction(
+  formData: FormData
+): Promise<void> {
   // Get current user session
   const session = await requireUser();
 
@@ -182,4 +185,29 @@ export async function updateAvailabilityAction(formData: FormData) : Promise<voi
   } catch (error) {
     console.error("Error updating availability:", error);
   }
+}
+
+export async function CreateEventTypeAction(prevState: any, formData: FormData) {
+  const session = await requireUser();
+
+  const submission = parseWithZod(formData, {
+    schema: eventTypeSchema,
+  });
+
+  if (submission.status !== "success") {
+    return submission.reply();
+  }
+
+  await prisma.eventType.create({
+    data: {
+      title: submission.value.title,
+      duration: submission.value.duration,
+      url: submission.value.url,
+      description: submission.value.description,
+      videoCallSoftware: submission.value.videoCallSoftware,
+      userId: session.user?.id as string,
+    },
+  });
+
+  return redirect("/dashboard");
 }
