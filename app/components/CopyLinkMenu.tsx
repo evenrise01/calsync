@@ -1,21 +1,28 @@
-'use client'
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+"use client";
+
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Link2 } from "lucide-react";
 import { toast } from "sonner";
 
-export function CopyLinkMenuItem({ meetingUrl }: { meetingUrl: string }) {
+interface CopyLinkMenuItemProps {
+  meetingUrl: string;
+}
+
+export function CopyLinkMenuItem({ meetingUrl }: CopyLinkMenuItemProps) {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(meetingUrl);
-      toast.success("Meeting link has been copied");
+      toast.success("URL copied to clipboard");
     } catch (err) {
-      toast.error("Unable to copy the meeting link")
+      console.error("Could not copy text: ", err);
+      toast.error("Failed to copy URL");
     }
   };
+
   return (
     <DropdownMenuItem onSelect={handleCopy}>
-      <Link2 className="mr-2 size-4" />
-      Copy
+      <Link2 className="mr-2 h-4 w-4" />
+      <span>Copy</span>
     </DropdownMenuItem>
   );
 }

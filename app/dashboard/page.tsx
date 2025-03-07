@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CopyLinkMenuItem } from "../components/CopyLinkMenu";
+import { MenuActiveSwitch } from "../components/EventTypeSwitcher";
 
 async function getData(userId: string) {
   const data = await prisma.user.findUnique({
@@ -102,15 +103,22 @@ export default async function DashboardPage() {
                             Preview
                           </Link>
                         </DropdownMenuItem>
-                        <CopyLinkMenuItem meetingUrl={`${process.env.NEXT_PUBLIC_URL}/${data.userName}/${item.url}`}/>
-                        <DropdownMenuItem>
-                          <Pen className="mr-2 size-4" /> Edit
+                        <CopyLinkMenuItem
+                          meetingUrl={`${process.env.NEXT_PUBLIC_URL}/${data.userName}/${item.url}`}
+                        />
+                        <DropdownMenuItem asChild>
+                          <Link href={`/dashboard/event/${item.id}`}>
+                            <Pen className="mr-2 h-4 w-4" />
+                            <span>Edit</span>
+                          </Link>
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href={`/dashboard/event/${item.id}/delete`}>
                         <Trash className="mr-2 size-4" />
                         Delete
+                        </Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -129,8 +137,11 @@ export default async function DashboardPage() {
                   </div>
                 </Link>
                 <div className="flex bg-muted px-5 py-3 justify-between items-center">
-                  <Switch />
-                  <Button>Edit Event</Button>
+                  <MenuActiveSwitch initialChecked={item.active} eventTypeId={item.id}/>
+                  
+                  <Link href={`/dashboard/event/${item.id}`}>
+                  <Button className="">Edit Event</Button>
+                </Link>
                 </div>
               </div>
             ))}
