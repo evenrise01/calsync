@@ -6,13 +6,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
   ExternalLink,
-  Link2,
   Pen,
   Settings,
   Trash,
   Users2,
 } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
 import {
   DropdownMenu,
   DropdownMenuContent,
